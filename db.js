@@ -26,8 +26,12 @@
       if (redisSockpath) {
         redisOptions.path = redisSockpath;
       } else {
-        redisOptions.port = redisPort;
-        redisOptions.host = redisHost;
+        // redisOptions.port = redisPort;
+        // redisOptions.host = redisHost;
+        redisOptions.sentinels = [
+          { host: "127.0.0.1", port: 26379 }
+        ]
+        redisOptions.name = "mymaster"
       }
       if (redisPass) {
         redisOptions.password = redisPass;
@@ -35,10 +39,23 @@
       if (redisDb) {
         redisOptions.db = redisDb;
       }
-      client = new ioredis(redisOptions);
+      // client = new ioredis(redisOptions);
+      client = new ioredis({
+        sentinels: [
+          { host: "127.0.0.1", port: 26379 },
+          { host: "127.0.0.1", port: 26380 },
+          { host: "127.0.0.1", port: 26381 }
+        ],
+        name: "mymaster"
+      })
       if (cb) {
         client.on('connect', cb);
       }
+    client.on("error", function (err) {
+        console.log("======================");
+        console.log(err);
+        console.log("======================");
+      });
       return client;
     };
     try {
