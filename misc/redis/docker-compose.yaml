@@ -19,9 +19,9 @@ services:
       redis-network:
         ipv4_address: 172.20.0.2
     volumes:
-      - "./misc/redis/tmp/redis1:/tmp"
-      - "./misc/redis/data/redis1:/data"
-      - "./misc/redis/config/redis1:/etc/redis"
+      - "./tmp/redis1:/tmp"
+      - "./data/redis1:/data"
+      - "./config/redis1:/etc/redis"
 
   redis2:
     container_name: "redis2"
@@ -33,9 +33,9 @@ services:
       redis-network:
         ipv4_address: 172.20.0.3
     volumes:
-      - "./misc/redis/tmp/redis2:/tmp"
-      - "./misc/redis/data/redis2:/data"
-      - "./misc/redis/config/redis2:/etc/redis"
+      - "./tmp/redis2:/tmp"
+      - "./data/redis2:/data"
+      - "./config/redis2:/etc/redis"
 
   redis3:
     container_name: "redis3"
@@ -47,9 +47,9 @@ services:
       redis-network:
         ipv4_address: 172.20.0.4
     volumes:
-      - "./misc/redis/tmp/redis3:/tmp"
-      - "./misc/redis/data/redis3:/data"
-      - "./misc/redis/config/redis3:/etc/redis"
+      - "./tmp/redis3:/tmp"
+      - "./data/redis3:/data"
+      - "./config/redis3:/etc/redis"
 
   redis-sentinel1:
     container_name: 'redis-sentinel1'
@@ -61,8 +61,8 @@ services:
       redis-network:
         ipv4_address: 172.20.0.5
     volumes:
-      - "./misc/redis/tmp/redis-sentinel1:/tmp"
-      - "./misc/redis/config/redis-sentinel1:/etc/sentinel-config"
+      - "./tmp/redis-sentinel1:/tmp"
+      - "./config/redis-sentinel1:/etc/sentinel-config"
     depends_on: [redis1, redis2, redis3]
 
   redis-sentinel2:
@@ -75,8 +75,8 @@ services:
       redis-network:
         ipv4_address: 172.20.0.6
     volumes:
-      - "./misc/redis/tmp/redis-sentinel2:/tmp"
-      - "./misc/redis/config/redis-sentinel2:/etc/sentinel-config"
+      - "./tmp/redis-sentinel2:/tmp"
+      - "./config/redis-sentinel2:/etc/sentinel-config"
     depends_on: [redis1, redis2, redis3]
 
   redis-sentinel3:
@@ -89,14 +89,14 @@ services:
       redis-network:
         ipv4_address: 172.20.0.7
     volumes:
-      - "./misc/redis/tmp/redis-sentinel3:/tmp"
-      - "./misc/redis/config/redis-sentinel3:/etc/sentinel-config"
+      - "./tmp/redis-sentinel3:/tmp"
+      - "./config/redis-sentinel3:/etc/sentinel-config"
     depends_on: [redis1, redis2, redis3]
 
   ethercalc-ioredis:
-#    build:
-#      dockerfile: ./Dockerfile
-    image: ethercalc-ioredis:latest
+    build:
+      dockerfile: ../../Dockerfile
+#    image: ethercalc-ioredis:latest
     ports:
       - "8000:8000"
     environment:

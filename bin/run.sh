@@ -30,13 +30,14 @@ fi
 
 #start redis server
 #Note: enable this if your redis server is not already running!
-#redis-server /path/to/my/redis.conf
+#redis-server /path/to/my/sentinel.conf
 
 # manual redis config
 
-#export REDIS_HOST=localhost
-#export REDIS_PORT=1234
-#export REDIS_PASS=mypassword
+export REDIS_HOST=localhost
+export REDIS_PORT=26379
+#export REDIS_PASS=defaultpassword
+#export REDIS_USER=user1
 #export REDIS_DB=0
 
 # When settings sensitive information here (redis password) remember to secure the file to prevent other users from reading it!
