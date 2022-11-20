@@ -27,15 +27,29 @@
     else
       #client = redis.createClient redisPort, redisHost
       #client = new ioredis redisPort, redisHost
-      redisOptions.port = redisPort
-      redisOptions.host = redisHost
+      #redisOptions.port = redisPort
+      #redisOptions.host = redisHost
+      redisOptions.name = "mymaster"
+      redisOptions.sentinels = [
+        { host: "172.20.0.2", port: 26379 },
+        { host: "172.20.0.3", port: 26380 },
+        { host: "172.20.0.4", port: 26381 }
+      ]
     if redisPass
       #client.auth redisPass, -> console.log ...arguments
       redisOptions.password = redisPass
     if redisDb
       #client.select redisDb, -> console.log "Selecting Redis database #{redisDb}"
       redisOptions.db = redisDb
-    client = new ioredis redisOptions
+    #client = new ioredis redisOptions
+    client = new ioredis({
+        sentinels: [
+            { host: "localhost", port: 26379 },
+            { host: "localhost", port: 26380 },
+            { host: "localhost", port: 26381 }
+        ],
+        name: "mymaster",
+    });
     client.on \connect cb if cb
     return client
 

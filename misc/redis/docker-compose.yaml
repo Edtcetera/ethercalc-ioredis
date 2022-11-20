@@ -14,53 +14,55 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
-    command: redis-server /etc/redis.conf
+    command: redis-server /etc/redis/redis.conf
     networks:
       redis-network:
         ipv4_address: 172.20.0.2
     volumes:
-      - "./data/redis1:/data/"
-      - "./config/redis1/redis.conf:/etc/redis.conf"
+      - "./tmp/redis1:/tmp"
+      - "./data/redis1:/data"
+      - "./config/redis1:/etc/redis"
 
   redis2:
     container_name: "redis2"
     image: redis:latest
     ports:
       - "6380:6380"
-    command: redis-server /etc/redis.conf
+    command: redis-server /etc/redis/redis.conf
     networks:
       redis-network:
         ipv4_address: 172.20.0.3
     volumes:
-      - "./data/redis2:/data/"
-      - "./config/redis2/redis.conf:/etc/redis.conf"
-    depends_on: [redis1]
+      - "./tmp/redis2:/tmp"
+      - "./data/redis2:/data"
+      - "./config/redis2:/etc/redis"
 
   redis3:
     container_name: "redis3"
     image: redis:latest
     ports:
       - "6381:6381"
-    command: redis-server /etc/redis.conf
+    command: redis-server /etc/redis/redis.conf
     networks:
       redis-network:
         ipv4_address: 172.20.0.4
     volumes:
-      - "./data/redis3:/data/"
-      - "./config/redis3/redis.conf:/etc/redis.conf"
-    depends_on: [redis2]
+      - "./tmp/redis3:/tmp"
+      - "./data/redis3:/data"
+      - "./config/redis3:/etc/redis"
 
   redis-sentinel1:
     container_name: 'redis-sentinel1'
     image: redis:latest
     ports:
       - "26379:26379"
-    command: redis-server /etc/redis-config/redis.conf --sentinel
+    command: redis-server /etc/sentinel-config/sentinel.conf --sentinel
     networks:
       redis-network:
         ipv4_address: 172.20.0.5
     volumes:
-      - "./config/redis-sentinel1:/etc/redis-config"
+      - "./tmp/redis-sentinel1:/tmp"
+      - "./config/redis-sentinel1:/etc/sentinel-config"
     depends_on: [redis1, redis2, redis3]
 
   redis-sentinel2:
@@ -68,12 +70,13 @@ services:
     image: redis:latest
     ports:
       - "26380:26380"
-    command: redis-server /etc/redis-config/redis.conf --sentinel
+    command: redis-server /etc/sentinel-config/sentinel.conf --sentinel
     networks:
       redis-network:
         ipv4_address: 172.20.0.6
     volumes:
-      - "./config/redis-sentinel2:/etc/redis-config"
+      - "./tmp/redis-sentinel2:/tmp"
+      - "./config/redis-sentinel2:/etc/sentinel-config"
     depends_on: [redis1, redis2, redis3]
 
   redis-sentinel3:
@@ -81,10 +84,25 @@ services:
     image: redis:latest
     ports:
       - "26381:26381"
-    command: redis-server /etc/redis-config/redis.conf --sentinel
+    command: redis-server /etc/sentinel-config/sentinel.conf --sentinel
     networks:
       redis-network:
         ipv4_address: 172.20.0.7
     volumes:
-      - "./config/redis-sentinel3:/etc/redis-config"
+      - "./tmp/redis-sentinel3:/tmp"
+      - "./config/redis-sentinel3:/etc/sentinel-config"
     depends_on: [redis1, redis2, redis3]
+
+  ethercalc-ioredis:
+    build:
+      dockerfile: ../../Dockerfile
+#    image: ethercalc-ioredis:latest
+    ports:
+      - "8000:8000"
+    environment:
+      REDIS_PORT_6379_TCP_ADDR: 172.20.0.2
+      REDIS_PORT_6379_TCP_PORT: 6379
+    networks:
+      redis-network:
+        ipv4_address: 172.20.0.8
+    depends_on: [redis-sentinel1, redis-sentinel2, redis-sentinel3]
